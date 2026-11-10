@@ -102,7 +102,7 @@
     '<button type="button" class="spk" aria-pressed="false" title="'+S.speak+'" aria-label="'+S.speak+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 8.5a5 5 0 010 7M18.5 6a8.5 8.5 0 010 12"/></svg></button>'+
     '<button type="button" class="x" aria-label="'+S.close+'">×</button></div></div>'+
     '<div class="coli__prog" aria-hidden="true"><i></i></div><div class="coli__msgs" aria-live="polite"></div>'+
-    '<form class="coli__foot"><label class="vh" for="coli-in">'+S.ph+'</label><input id="coli-in" type="text" autocomplete="off" maxlength="300" placeholder="'+S.ph+'">'+
+    '<form class="coli__foot"><input type="text" name="_honey" class="vh" tabindex="-1" autocomplete="off" aria-hidden="true"><label class="vh" for="coli-in">'+S.ph+'</label><input id="coli-in" type="text" autocomplete="off" maxlength="300" placeholder="'+S.ph+'">'+
     '<button type="button" class="mic" aria-label="'+S.mic+'" title="'+S.mic+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg></button>'+
     '<button type="submit" aria-label="'+S.send+'"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 20.5l18-8.5L3 3.5l2.5 7L15 12l-9.5 1.5z"/></svg></button></form>'+
     '<div class="coli__note">'+S.note+'</div>';
@@ -149,10 +149,12 @@
     st.cap=-2;
     say(S.consent).then(function(){chips([{t:S.sendit,fn:submitLead},{t:S.cancel,fn:function(){st.cap=-1;setProg();menu();}}]);});
   }
+  var coliT0=Date.now();
   function submitLead(){
     st.cap=-1;
+    var hp=box.querySelector('[name="_honey"]');if((hp&&hp.value)||Date.now()-coliT0<3000){say(S.sent);return;}
     var data={nombre:st.lead.nombre,negocio:st.lead.negocio,whatsapp:st.lead.whatsapp,mensaje:st.lead.necesidad,origen:'Chat Coli',pagina:location.href,idioma:LANG,
-      _subject:(LANG==='es'?'Nuevo lead (Coli) bogotaseo.com — ':'New lead (Coli EN) bogotaseo.com — ')+(st.lead.negocio||''),_template:'table',_captcha:'false'};
+      _subject:(LANG==='es'?'Nuevo lead (Coli) bogotaseo.com — ':'New lead (Coli EN) bogotaseo.com — ')+(st.lead.negocio||''),_template:'table',_captcha:'false',_honey:''};
     var ep='https://formsubmit.co/ajax/'+atob('aW5mbw==')+'@'+atob('ZXlldG9hZC5jb20=');
     fetch(ep,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(data)})
       .then(function(r){if(!r.ok)throw 0;prog.style.width='100%';return say(S.sent);})
